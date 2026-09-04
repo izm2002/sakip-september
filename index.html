@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>PRIMA - Monitoring AKIP</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<header class="header">
+
+    <div class="header-overlay">
+
+        <div class="header-content">
+
+            <div class="header-text">
+
+                <span class="header-label">
+                    PORTAL RENCANA IMPLEMENTASI DAN MONITORING AKUNTABILITAS
+                </span>
+
+                <h1>PRIMA</h1>
+
+                <p class="header-description">
+                    Portal Rencana Implementasi dan Monitoring Akuntabilitas
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+<main class="container">
+     
+<!-- =====================================
+     MENU NAVIGASI
+===================================== -->
+
+<nav class="menu-nav">
+
+    <button class="menu-btn"
+            data-menu="perencanaan">
+        📁 Perencanaan
+    </button>
+
+    <button class="menu-btn active"
+            data-menu="monitoring">
+        📊 Monitoring
+    </button>
+
+</nav>
+
+
+
+<!-- =====================================
+     MENU PERENCANAAN
+===================================== -->
+
+<section id="perencanaanSection"
+         class="menu-content">
+
+    <div class="planning-header">
+
+        <h2>Perencanaan SAKIP</h2>
+
+        <p>
+            Akses dokumen perencanaan dan evaluasi
+            akuntabilitas.
+        </p>
+
+    </div>
+
+
+<div class="planning-container">
+
+  <div class="planning-card">
+
+    <h3>
+        📄 Notula Reviu Target Renstra
+    </h3>
+
+    <a href="https://drive.google.com/drive/folders/1l4J7HdLckIX4bykx3TeAID8fUvpSDtuN?usp=sharing" target="_blank">
+        📄 Buka Dokumen 1
+    </a>
+
+    <a href="https://drive.google.com/drive/folders/1McQq2eO35wxt13rQ-Rn167uSC4eF65VL?usp=drive_link&ouid=105803046817608227872&rtpof=true&sd=true" target="_blank">
+        📄 Buka Dokumen 2
+    </a>
+
+    <a href="https://drive.google.com/drive/folders/1g3Sl49z0On9-u878OPpin3QKuD8s64zy?usp=sharing" target="_blank">
+        📄 Buka Dokumen 3
+    </a>
+
+</div>
+
+
+  <div class="planning-card">
+
+    <h3>
+        📈 Notula Capaian Target Renstra
+    </h3>
+
+    <a href="https://drive.google.com/drive/folders/19oyUXDnQskm99muan-l6tTPfcwvli91U?usp=sharing" target="_blank">
+        📁 Buka Folder Capaian Target Renstra
+    </a>
+
+    <a href="https://docs.google.com/document/d/1sxsj4qITZAK4YBQtwD599eNmJ-UhtYvi/edit?usp=drive_link&ouid=105803046817608227872&rtpof=true&sd=true" target="_blank">
+        📄 Buka Dokumen 1
+    </a>
+
+    <a href="https://docs.google.com/document/d/1sxsj4qITZAK4YBQtwD599eNmJ-UhtYvi/edit?usp=drive_link&ouid=105803046817608227872&rtpof=true&sd=true" target="_blank">
+        📄 Buka Dokumen 2
+    </a>
+
+</div>
+
+
+
+  <div class="planning-card">
+
+    <h3>
+        📝 Notula Perjanjian Kinerja
+    </h3>
+
+    <a href="https://docs.google.com/document/d/1sxsj4qITZAK4YBQtwD599eNmJ-UhtYvi/edit?usp=drive_link&ouid=105803046817608227872&rtpof=true&sd=true" target="_blank">
+        📄 Buka Dokumen 1
+    </a>
+
+    <a href="https://docs.google.com/document/d/1sxsj4qITZAK4YBQtwD599eNmJ-UhtYvi/edit?usp=drive_link&ouid=105803046817608227872&rtpof=true&sd=true" target="_blank">
+        📄 Buka Dokumen 2
+    </a>
+
+    <a href="https://docs.google.com/document/d/1sxsj4qITZAK4YBQtwD599eNmJ-UhtYvi/edit?usp=drive_link&ouid=105803046817608227872&rtpof=true&sd=true" target="_blank">
+        📄 Buka Dokumen 3
+    </a>
+
+</div>
+
+
+
+        <div class="planning-card">
+
+            <h3>
+                📚 Laporan Kinerja 2025
+            </h3>
+
+            <a href="https://docs.google.com/document/d/1sxsj4qITZAK4YBQtwD599eNmJ-UhtYvi/edit?usp=drive_link&ouid=105803046817608227872&rtpof=true&sd=true" target="_blank">
+                Buka Dokumen
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================
+     MENU MONITORING
+===================================== -->
+
+<section id="monitoringSection"
+         class="menu-content active">
+
+ 
+
+    <!-- =================================
+         PILIH PERIODE
+    ================================== -->
+
+    <section class="periode-section">
+
+
+        <div class="section-title">
+
+            <h2>
+                Pilih Periode Monitoring
+            </h2>
+
+            <p>
+                Pilih tahun dan triwulan untuk
+                menampilkan perkembangan
+                kelengkapan dokumen AKIP.
+            </p>
+
+        </div>
+
+
+        <div class="periode-control">
+
+
+            <!-- PILIH TAHUN -->
+
+            <div class="tahun-control">
+
+                <label for="tahunSelect">
+
+                    Tahun
+
+                </label>
+
+
+                <select
+                    id="tahunSelect"
+                >
+
+                    <option value="2026">
+
+                        2026
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- PILIH TRIWULAN -->
+
+            <div class="triwulan-control">
+
+                <label>
+
+                    Triwulan
+
+                </label>
+
+
+                <div class="triwulan-buttons">
+
+
+                    <button
+                        class="triwulan-button active"
+                        data-triwulan="1"
+                    >
+
+                        Triwulan I
+
+                    </button>
+
+
+                    <button
+                        class="triwulan-button"
+                        data-triwulan="2"
+                    >
+
+                        Triwulan II
+
+                    </button>
+
+
+                    <button
+                        class="triwulan-button"
+                        data-triwulan="3"
+                    >
+
+                        Triwulan III
+
+                    </button>
+
+
+                    <button
+                        class="triwulan-button"
+                        data-triwulan="4"
+                    >
+
+                        Triwulan IV
+
+                    </button>
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <div
+            class="periode-active"
+            id="periodeInfo"
+        >
+
+            Monitoring Triwulan I Tahun 2026
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =================================
+         PROGRES DAN COUNTDOWN
+    ================================== -->
+
+    <section class="dashboard-section">
+
+
+        <!-- =============================
+             KARTU PROGRES
+        ============================== -->
+
+        <div class="progress-card">
+
+
+            <div class="card-heading">
+
+                <div>
+
+                    <p class="card-label">
+
+                        PROGRES DOKUMEN
+
+                    </p>
+
+
+                    <h2>
+
+                        Kelengkapan Bukti Dukung
+
+                    </h2>
+
+
+                    <p
+                        class="progress-description"
+                        id="statusProgress"
+                    >
+
+                        Sedang memuat data...
+
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="refresh-button"
+                    id="refreshButton"
+                >
+
+                    ↻ Perbarui Data
+
+                </button>
+
+
+            </div>
+
+
+
+            <!-- DIAGRAM DONUT -->
+
+            <div class="progress-content">
+
+
+                <div class="donut-wrapper">
+
+
+                    <div
+                        class="donut-chart"
+                        id="donutChart"
+                    >
+
+
+                        <div class="donut-center">
+
+
+                            <strong
+                                id="persentaseDokumen"
+                            >
+
+                                0%
+
+                            </strong>
+
+
+                            <span>
+
+                                Lengkap
+
+                            </span>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- DETAIL PROGRES -->
+
+                <div class="progress-information">
+
+
+                    <div class="progress-number">
+
+                        <strong
+                            id="dokumenTersedia"
+                        >
+
+                            0
+
+                        </strong>
+
+
+                        <span>
+
+                            dari
+
+                        </span>
+
+
+                        <strong
+                            id="totalDokumen"
+                        >
+
+                            51
+
+                        </strong>
+
+
+                        <span>
+
+                            dokumen tersedia
+
+                        </span>
+
+
+                    </div>
+
+
+                    <div class="progress-bar-container">
+
+                        <div
+                            class="progress-bar"
+                            id="progressDokumen"
+                        >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="progress-iku-info">
+
+
+                        <div class="iku-progress-item">
+
+                            <span>
+
+                                IKU Lengkap
+
+                            </span>
+
+
+                            <strong>
+
+                                <span
+                                    id="ikuLengkap"
+                                >
+
+                                    0
+
+                                </span>
+
+                                /
+
+                                <span
+                                    id="totalIKU"
+                                >
+
+                                    17
+
+                                </span>
+
+                            </strong>
+
+                        </div>
+
+
+                        <div class="iku-progress-item">
+
+                            <span>
+
+                                Persentase IKU
+
+                            </span>
+
+
+                            <strong
+                                id="persentaseIKU"
+                            >
+
+                                0%
+
+                            </strong>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =============================
+             COUNTDOWN
+        ============================== -->
+
+        <aside class="countdown-card">
+
+
+            <div class="countdown-heading">
+
+
+                <span class="countdown-icon">
+
+                    ⏳
+
+                </span>
+
+
+                <div>
+
+                    <p>
+
+                        BATAS PENGUMPULAN
+
+                    </p>
+
+
+                    <h2>
+
+                        Countdown Deadline
+
+                    </h2>
+
+                </div>
+
+
+            </div>
+
+
+            <p
+                class="deadline-date"
+                id="deadlineDate"
+            >
+
+                Deadline sedang dimuat...
+
+            </p>
+
+
+            <p
+                class="deadline-status"
+                id="deadlineStatus"
+            >
+
+                Menghitung waktu tersisa...
+
+            </p>
+
+
+
+            <!-- ANGKA COUNTDOWN -->
+
+            <div class="countdown-timer">
+
+
+                <div class="time-box">
+
+                    <strong
+                        id="countdownDays"
+                    >
+
+                        00
+
+                    </strong>
+
+
+                    <span>
+
+                        Hari
+
+                    </span>
+
+                </div>
+
+
+                <div class="time-box">
+
+                    <strong
+                        id="countdownHours"
+                    >
+
+                        00
+
+                    </strong>
+
+
+                    <span>
+
+                        Jam
+
+                    </span>
+
+                </div>
+
+
+                <div class="time-box">
+
+                    <strong
+                        id="countdownMinutes"
+                    >
+
+                        00
+
+                    </strong>
+
+
+                    <span>
+
+                        Menit
+
+                    </span>
+
+                </div>
+
+
+                <div class="time-box">
+
+                    <strong
+                        id="countdownSeconds"
+                    >
+
+                        00
+
+                    </strong>
+
+
+                    <span>
+
+                        Detik
+
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =========================
+                 DAFTAR PJ BERMASALAH
+            ========================== -->
+
+            <div class="pj-monitoring">
+
+
+                <div class="pj-heading">
+
+
+                    <div>
+
+                        <p>
+
+                            TINDAK LANJUT
+
+                        </p>
+
+
+                        <h3>
+
+                            PJ dengan Dokumen
+                            Belum Lengkap
+
+                        </h3>
+
+                    </div>
+
+
+                </div>
+
+
+                <div
+                    class="pj-list"
+                    id="pjList"
+                >
+
+
+                    <p class="loading">
+
+                        Sedang memuat data PJ...
+
+                    </p>
+
+
+                </div>
+
+
+            </div>
+
+
+        </aside>
+
+
+    </section>
+
+
+
+    <!-- =================================
+         RINGKASAN STATUS
+    ================================== -->
+
+    <section class="summary-section">
+
+
+        <div class="summary-card summary-lengkap">
+
+
+            <div class="summary-icon">
+
+                ✓
+
+            </div>
+
+
+            <div>
+
+                <span>
+
+                    IKU Lengkap
+
+                </span>
+
+
+                <strong
+                    id="summaryLengkap"
+                >
+
+                    0
+
+                </strong>
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="summary-card summary-sebagian">
+
+
+            <div class="summary-icon">
+
+                !
+
+            </div>
+
+
+            <div>
+
+                <span>
+
+                    IKU Belum Lengkap
+
+                </span>
+
+
+                <strong
+                    id="summarySebagian"
+                >
+
+                    0
+
+                </strong>
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="summary-card summary-kosong">
+
+
+            <div class="summary-icon">
+
+                ×
+
+            </div>
+
+
+            <div>
+
+                <span>
+
+                    IKU Belum Ada Dokumen
+
+                </span>
+
+
+                <strong
+                    id="summaryKosong"
+                >
+
+                    0
+
+                </strong>
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- =================================
+         DAFTAR 17 IKU
+    ================================== -->
+
+    <section class="indikator-section">
+
+
+        <div class="indikator-heading">
+
+
+            <div>
+
+
+                <p class="section-label">
+
+                    STATUS DOKUMEN
+
+                </p>
+
+
+                <h2>
+
+                    Monitoring Indikator
+                    Kinerja Utama
+
+                </h2>
+
+
+                <p>
+
+                    Setiap IKU diperiksa berdasarkan
+                    ketersediaan notula, bukti dukung
+                    kinerja, dan bukti tindak lanjut.
+
+                </p>
+
+
+            </div>
+
+
+            <div class="status-legend">
+
+
+                <span>
+
+                    <i class="legend-blue"></i>
+
+                    Lengkap
+
+                </span>
+
+
+                <span>
+
+                    <i class="legend-yellow"></i>
+
+                    Sebagian
+
+                </span>
+
+
+                <span>
+
+                    <i class="legend-red"></i>
+
+                    Kosong
+
+                </span>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- 17 KARTU IKU DIBUAT SCRIPT.JS -->
+
+        <div
+            class="indikator-grid"
+            id="indikatorList"
+        >
+
+
+            <p class="loading">
+
+                Sedang memuat
+                17 indikator IKU...
+
+            </p>
+
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+
+<!-- =====================================
+     FOOTER
+===================================== -->
+
+<footer>
+
+
+    <p>
+
+        PRIMA — Portal Rencana,
+        Implementasi, dan Monitoring
+        Akuntabilitas
+
+    </p>
+
+
+    <p>
+
+        Sistem Monitoring Kelengkapan
+        Dokumen dan Bukti Dukung AKIP
+
+    </p>
+
+
+</footer>
+
+
+
+<!-- JAVASCRIPT -->
+
+<script src="script.js"></script>
+
+
+</body>
+
+</html>   
