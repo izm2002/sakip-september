@@ -1,1673 +1,527 @@
 /* =====================================
-   PENGATURAN DASAR
+   KONFIGURASI API GOOGLE APPS SCRIPT
 ===================================== */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
-
-:root {
-    --biru-tua: #123b67;
-    --biru: #2166a5;
-    --biru-muda: #e8f2fb;
-
-    --kuning: #e5a72d;
-    --kuning-muda: #fff5d9;
-
-    --merah: #cf4b4b;
-    --merah-muda: #fff0f0;
-
-    --hijau: #2d8a62;
-
-    --teks: #243447;
-    --teks-sekunder: #66778a;
-
-    --latar: #f3f7fb;
-
-    --putih: #ffffff;
-
-    --border: #dce5ee;
-}
-
-
-body {
-    background-color: var(--latar);
-    color: var(--teks);
-    line-height: 1.5;
-}
+const apiURL = {
+    2026: {
+        1: "https://script.google.com/macros/s/AKfycbxWqnAHMrMYJ7B1seIyE3x0hP5CWXQ4EMgYFU7uFaJCWqio8OvzcMb6jSUKf3z4eiCn/exec",
+        2: "https://script.google.com/macros/s/AKfycbwqC9AaxWLDSUVtZImhvUX8Zv8H09PyvXCpLdCkQt2X4qhocFBRV5ALnwc_-um2rkYHaA/exec",
+        3: "https://script.google.com/macros/s/AKfycbzmhFpQ_9Qi3jPH3JHco50ieBvko22LgA53csCBM3OYxl4AyjWUGvg_lw7kK5FviCbx/exec",
+        4: "https://script.google.com/macros/s/AKfycbzS7SwSJT-2t44IXsTyKpE-KbHI34vDcIaN0hy7RcKyTE_y3OJdCjIAr4XCQmY6r1mi/exec"
+    }
+};
 
 
 /* =====================================
-   HEADER DENGAN GAMBAR GOOGLE DRIVE
+   VARIABEL GLOBAL
 ===================================== */
 
-.header {
-
-    background-image: url("header2.png");
-
-    background-size: cover;
-
-    background-position: center;
-
-    background-repeat: no-repeat;
-
-    min-height: 245px;
-
-    position: relative;
-
-}
+let tahunAktif = 2026;
+let triwulanAktif = 1;
+let dataMonitoring = null;
 
 
-.header-overlay {
+/* =====================================
+   ELEMENT HTML
+===================================== */
 
-    min-height: 245px;
+const tahunSelect = document.getElementById("tahunSelect");
+const triwulanButtons = document.querySelectorAll(".triwulan-button");
 
-    width: 100%;
+const periodeInfo = document.getElementById("periodeInfo");
 
-    background:
-        linear-gradient(
-            90deg,
-            rgba(8, 35, 67, 0.78),
-            rgba(8, 35, 67, 0.40),
-            rgba(8, 35, 67, 0.12)
+const indikatorList = document.getElementById("indikatorList");
+
+const refreshButton = document.getElementById("refreshButton");
+
+const donutChart = document.getElementById("donutChart");
+const persentaseDokumen = document.getElementById("persentaseDokumen");
+
+const dokumenTersedia = document.getElementById("dokumenTersedia");
+const totalDokumen = document.getElementById("totalDokumen");
+
+const progressDokumen = document.getElementById("progressDokumen");
+const statusProgress = document.getElementById("statusProgress");
+
+const ikuLengkap = document.getElementById("ikuLengkap");
+const totalIKU = document.getElementById("totalIKU");
+const persentaseIKU = document.getElementById("persentaseIKU");
+
+const summaryLengkap = document.getElementById("summaryLengkap");
+const summarySebagian = document.getElementById("summarySebagian");
+const summaryKosong = document.getElementById("summaryKosong");
+
+const deadlineDate = document.getElementById("deadlineDate");
+const deadlineStatus = document.getElementById("deadlineStatus");
+
+const countdownDays = document.getElementById("countdownDays");
+const countdownHours = document.getElementById("countdownHours");
+const countdownMinutes = document.getElementById("countdownMinutes");
+const countdownSeconds = document.getElementById("countdownSeconds");
+
+const pjList = document.getElementById("pjList");
+
+
+/* =====================================
+   MENU PERENCANAAN / MONITORING
+===================================== */
+
+const menuButtons = document.querySelectorAll(".menu-btn");
+
+const perencanaanSection =
+    document.getElementById("perencanaanSection");
+
+const monitoringSection =
+    document.getElementById("monitoringSection");
+
+
+menuButtons.forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        const menu = button.dataset.menu;
+
+        menuButtons.forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+        if (menu === "perencanaan") {
+
+            perencanaanSection.classList.add("active");
+            monitoringSection.classList.remove("active");
+
+        } else {
+
+            perencanaanSection.classList.remove("active");
+            monitoringSection.classList.add("active");
+
+        }
+
+    });
+
+});
+
+
+/* =====================================
+   GANTI TRIWULAN
+===================================== */
+
+triwulanButtons.forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        triwulanButtons.forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+        triwulanAktif =
+            Number(button.dataset.triwulan);
+
+        updatePeriode();
+
+        loadMonitoring();
+
+    });
+
+});
+
+
+/* =====================================
+   GANTI TAHUN
+===================================== */
+
+tahunSelect.addEventListener("change", () => {
+
+    tahunAktif =
+        Number(tahunSelect.value);
+
+    triwulanAktif = 1;
+
+    triwulanButtons.forEach((button, index) => {
+
+        button.classList.toggle(
+            "active",
+            index === 0
         );
 
-    display: flex;
+    });
 
-    align-items: center;
+    updatePeriode();
 
-}
+    loadMonitoring();
 
-
-.header-content {
-
-    width: 90%;
-
-    max-width: 1250px;
-
-    margin: auto;
-
-    padding: 35px 0;
-
-}
+});
 
 
-.header-text {
+/* =====================================
+   INFORMASI PERIODE
+===================================== */
 
-    max-width: 780px;
+function updatePeriode() {
 
-    color: white;
+    const namaTriwulan = {
 
-}
+        1: "I",
+        2: "II",
+        3: "III",
+        4: "IV"
 
+    };
 
-.header-label {
-
-    display: inline-block;
-
-    background-color:
-        rgba(255, 255, 255, 0.18);
-
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.35);
-
-    padding: 7px 13px;
-
-    border-radius: 30px;
-
-    font-size: 12px;
-
-    font-weight: bold;
-
-    letter-spacing: 1.2px;
-
-    margin-bottom: 14px;
-
-}
-
-
-.header h1 {
-
-    font-size: 48px;
-
-    font-weight: 800;
-
-    letter-spacing: 1px;
-
-    line-height: 1.1;
-
-    margin-bottom: 13px;
-
-    text-shadow:
-        0 3px 10px
-        rgba(0, 0, 0, 0.28);
-
-}
-
-
-.header-description {
-
-    font-size: 19px;
-
-    line-height: 1.5;
-
-    max-width: 630px;
-
-    text-shadow:
-        0 2px 7px
-        rgba(0, 0, 0, 0.25);
+    periodeInfo.textContent =
+        `Monitoring Triwulan ${namaTriwulan[triwulanAktif]} Tahun ${tahunAktif}`;
 
 }
 
 
 /* =====================================
-   CONTAINER
+   LOAD DATA DARI GOOGLE APPS SCRIPT
 ===================================== */
 
-.container {
+async function loadMonitoring() {
 
-    width: 90%;
+    const url =
+        apiURL?.[tahunAktif]?.[triwulanAktif];
 
-    max-width: 1250px;
+    if (!url) {
 
-    margin:
-        35px auto
-        70px;
+        showError(
+            "API untuk periode ini belum tersedia."
+        );
 
-}
+        return;
 
-.planning-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-}
-/* =====================================
-   JUDUL BAGIAN
-===================================== */
+    }
 
-.section-title h2 {
 
-    color:
-        var(--biru-tua);
+    refreshButton.disabled = true;
 
-    font-size: 27px;
+    refreshButton.textContent =
+        "⏳ Memuat...";
 
-    margin-bottom: 6px;
 
-}
+    indikatorList.innerHTML = `
+        <p class="loading">
+            Sedang mengambil data dari Google Apps Script...
+        </p>
+    `;
 
 
-.section-title p {
+    try {
 
-    color:
-        var(--teks-sekunder);
+        const response =
+            await fetch(url);
 
-    font-size: 15px;
+        if (!response.ok) {
 
-}
+            throw new Error(
+                `HTTP ${response.status}`
+            );
 
+        }
 
-/* =====================================
-   PILIH PERIODE
-===================================== */
 
-.periode-section {
+        const data =
+            await response.json();
 
-    background-color:
-        var(--putih);
 
-    border-radius: 18px;
+        console.log(
+            "Data dari Apps Script:",
+            data
+        );
 
-    padding: 28px;
 
-    box-shadow:
-        0 5px 20px
-        rgba(25, 55, 85, 0.07);
+        dataMonitoring = data;
 
-    margin-bottom: 25px;
 
-}
+        renderMonitoring(data);
 
 
-.periode-control {
+    } catch (error) {
 
-    display: flex;
+        console.error(
+            "Gagal mengambil data:",
+            error
+        );
 
-    align-items: flex-end;
 
-    gap: 28px;
+        showError(
+            "Data tidak dapat dimuat. Periksa URL Google Apps Script dan akses Web App."
+        );
 
-    margin-top: 25px;
+    } finally {
 
-}
+        refreshButton.disabled = false;
 
+        refreshButton.textContent =
+            "↻ Perbarui Data";
 
-.tahun-control {
-
-    min-width: 180px;
-
-}
-
-
-.tahun-control label,
-
-.triwulan-control > label {
-
-    display: block;
-
-    color:
-        var(--teks);
-
-    font-size: 13px;
-
-    font-weight: bold;
-
-    margin-bottom: 8px;
-
-}
-
-
-#tahunSelect {
-
-    width: 100%;
-
-    background-color:
-        #f7faff;
-
-    border:
-        1px solid
-        var(--border);
-
-    border-radius: 9px;
-
-    padding:
-        12px 15px;
-
-    color:
-        var(--biru-tua);
-
-    font-size: 15px;
-
-    font-weight: bold;
-
-    outline: none;
-
-    cursor: pointer;
-
-}
-
-
-#tahunSelect:focus {
-
-    border-color:
-        var(--biru);
-
-}
-
-
-.triwulan-control {
-
-    flex: 1;
-
-}
-
-
-.triwulan-buttons {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(4, 1fr);
-
-    gap: 10px;
-
-}
-
-
-.triwulan-button {
-
-    background-color:
-        #f5f8fc;
-
-    color:
-        var(--teks-sekunder);
-
-    border:
-        1px solid
-        var(--border);
-
-    padding:
-        12px 10px;
-
-    border-radius: 9px;
-
-    font-size: 14px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-
-    transition:
-        0.2s ease;
-
-}
-
-
-.triwulan-button:hover {
-
-    border-color:
-        var(--biru);
-
-    color:
-        var(--biru);
-
-}
-
-
-.triwulan-button.active {
-
-    background-color:
-        var(--biru-tua);
-
-    border-color:
-        var(--biru-tua);
-
-    color:
-        white;
-
-}
-
-
-.periode-active {
-
-    display: inline-block;
-
-    background-color:
-        var(--biru-muda);
-
-    color:
-        var(--biru-tua);
-
-    padding:
-        8px 13px;
-
-    border-radius: 8px;
-
-    font-size: 13px;
-
-    font-weight: bold;
-
-    margin-top: 20px;
+    }
 
 }
 
 
 /* =====================================
-   DASHBOARD
+   RENDER MONITORING
 ===================================== */
 
-.dashboard-section {
-
-    display: grid;
-
-    grid-template-columns:
-        minmax(0, 1.6fr)
-        minmax(330px, 0.9fr);
-
-    gap: 25px;
-
-    align-items: stretch;
-
-}
-
-
-/* =====================================
-   KARTU PROGRES
-===================================== */
-
-.progress-card,
-
-.countdown-card {
-
-    background-color:
-        var(--putih);
-
-    border-radius: 18px;
-
-    padding: 28px;
-
-    box-shadow:
-        0 5px 20px
-        rgba(25, 55, 85, 0.07);
-
-}
-
-
-.card-heading {
-
-    display: flex;
-
-    align-items: flex-start;
-
-    justify-content: space-between;
-
-    gap: 20px;
-
-    margin-bottom: 28px;
-
-}
-
-
-.card-label,
-
-.section-label {
-
-    color:
-        var(--biru);
-
-    font-size: 11px;
-
-    font-weight: bold;
-
-    letter-spacing: 1.2px;
-
-    margin-bottom: 5px;
-
-}
-
-
-.card-heading h2 {
-
-    color:
-        var(--biru-tua);
-
-    font-size: 25px;
-
-    margin-bottom: 6px;
-
-}
-
-
-.progress-description {
-
-    color:
-        var(--teks-sekunder);
-
-    font-size: 14px;
-
-}
-
-
-.refresh-button {
-
-    background-color:
-        var(--biru-tua);
-
-    color:
-        white;
-
-    border: none;
-
-    border-radius: 9px;
-
-    padding:
-        11px 15px;
-
-    font-size: 13px;
-
-    font-weight: bold;
-
-    white-space: nowrap;
-
-    cursor: pointer;
-
-    transition:
-        0.2s ease;
-
-}
-
-
-.refresh-button:hover {
-
-    background-color:
-        #0d2e50;
-
-}
-
-
-.refresh-button:disabled {
-
-    opacity: 0.65;
-
-    cursor: wait;
-
-}
-
-
-/* =====================================
-   DIAGRAM DONUT
-===================================== */
-
-.progress-content {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 38px;
-
-}
-
-
-.donut-wrapper {
-
-    flex-shrink: 0;
-
-}
-
-
-.donut-chart {
+function renderMonitoring(data) {
 
     /*
-    Nilai conic-gradient
-    akan diubah oleh script.js
+       Bagian ini sengaja dibuat fleksibel.
+
+       Nanti kita sesuaikan dengan struktur
+       JSON yang dikirim Google Apps Script.
     */
 
-    width: 205px;
-
-    height: 205px;
-
-    border-radius: 50%;
-
-    background:
-        conic-gradient(
-            var(--biru)
-            0%,
-            var(--biru)
-            0%,
-            #e4ebf2
-            0%,
-            #e4ebf2
-            100%
-        );
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    position: relative;
-
-    transition:
-        background
-        0.8s ease;
-
-}
+    const indikator =
+        data.indikator ||
+        data.data ||
+        data.iku ||
+        [];
 
 
-.donut-chart::before {
+    renderIKU(indikator);
 
-    content: "";
-
-    width: 145px;
-
-    height: 145px;
-
-    border-radius: 50%;
-
-    background-color:
-        white;
-
-    position: absolute;
-
-}
-
-
-.donut-center {
-
-    position: relative;
-
-    z-index: 2;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-}
-
-
-.donut-center strong {
-
-    color:
-        var(--biru-tua);
-
-    font-size: 35px;
-
-    line-height: 1;
-
-}
-
-
-.donut-center span {
-
-    color:
-        var(--teks-sekunder);
-
-    font-size: 12px;
-
-    margin-top: 7px;
+    updateDashboard(indikator, data);
 
 }
 
 
 /* =====================================
-   INFORMASI PROGRES
+   RENDER 17 IKU
 ===================================== */
 
-.progress-information {
+function renderIKU(indikator) {
 
-    flex: 1;
-
-    min-width: 0;
-
-}
+    indikatorList.innerHTML = "";
 
 
-.progress-number {
+    if (!Array.isArray(indikator) ||
+        indikator.length === 0) {
 
-    display: flex;
+        indikatorList.innerHTML = `
+            <p class="loading">
+                Tidak ada data IKU untuk periode ini.
+            </p>
+        `;
 
-    align-items: baseline;
+        return;
 
-    flex-wrap: wrap;
-
-    gap: 7px;
-
-    color:
-        var(--teks-sekunder);
-
-    font-size: 14px;
-
-    margin-bottom: 16px;
-
-}
+    }
 
 
-.progress-number strong {
+    indikator.forEach((iku, index) => {
 
-    color:
-        var(--biru-tua);
+        const card =
+            createIKUCard(
+                iku,
+                index
+            );
 
-    font-size: 27px;
+        indikatorList.appendChild(card);
 
-}
-
-
-.progress-bar-container {
-
-    width: 100%;
-
-    height: 13px;
-
-    background-color:
-        #e4ebf2;
-
-    border-radius: 20px;
-
-    overflow: hidden;
-
-    margin-bottom: 22px;
-
-}
-
-
-.progress-bar {
-
-    width: 0%;
-
-    height: 100%;
-
-    background:
-        linear-gradient(
-            90deg,
-            var(--biru-tua),
-            #4f91ca
-        );
-
-    border-radius: 20px;
-
-    transition:
-        width
-        0.8s ease;
-
-}
-
-
-.progress-iku-info {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, 1fr);
-
-    gap: 12px;
-
-}
-
-
-.iku-progress-item {
-
-    background-color:
-        #f6f9fc;
-
-    border:
-        1px solid
-        #e4ebf2;
-
-    border-radius: 11px;
-
-    padding: 15px;
-
-}
-
-
-.iku-progress-item span {
-
-    display: block;
-
-    color:
-        var(--teks-sekunder);
-
-    font-size: 12px;
-
-    margin-bottom: 5px;
-
-}
-
-
-.iku-progress-item strong {
-
-    color:
-        var(--biru-tua);
-
-    font-size: 20px;
+    });
 
 }
 
 
 /* =====================================
-   COUNTDOWN
+   BUAT KARTU IKU
 ===================================== */
 
-.countdown-card {
+function createIKUCard(iku, index) {
 
-    display: flex;
+    /*
+       Kita menerima beberapa kemungkinan
+       nama field dari Apps Script.
+    */
 
-    flex-direction: column;
+    const nama =
+        iku.nama ||
+        iku.namaIKU ||
+        iku.indikator ||
+        iku.name ||
+        `Indikator Kinerja Utama ${index + 1}`;
 
-}
 
+    const pj =
+        iku.pj ||
+        iku.penanggungJawab ||
+        iku.penanggung_jawab ||
+        "-";
 
-.countdown-heading {
 
-    display: flex;
+    const notula =
+        iku.notula ||
+        iku.buktiNotula ||
+        iku.dokumenNotula;
 
-    align-items: center;
 
-    gap: 12px;
+    const kinerja =
+        iku.kinerja ||
+        iku.buktiKinerja ||
+        iku.dokumenKinerja;
 
-    margin-bottom: 15px;
 
-}
+    const tindakLanjut =
+        iku.tindakLanjut ||
+        iku.tindak_lanjut ||
+        iku.buktiTindakLanjut;
 
 
-.countdown-icon {
+    const dokumen = {
 
-    width: 44px;
+        notula: Boolean(notula),
+        kinerja: Boolean(kinerja),
+        tindakLanjut: Boolean(tindakLanjut)
 
-    height: 44px;
+    };
 
-    display: flex;
 
-    align-items: center;
+    const jumlahDokumen =
+        Object.values(dokumen)
+            .filter(Boolean)
+            .length;
 
-    justify-content: center;
 
-    background-color:
-        var(--kuning-muda);
+    let status = "kosong";
 
-    border-radius: 12px;
+    let statusText = "Kosong";
 
-    font-size: 22px;
 
-}
+    if (jumlahDokumen === 3) {
 
+        status = "lengkap";
+        statusText = "Lengkap";
 
-.countdown-heading p,
+    } else if (jumlahDokumen > 0) {
 
-.pj-heading p {
+        status = "sebagian";
+        statusText = "Sebagian";
 
-    color:
-        var(--kuning);
+    }
 
-    font-size: 10px;
 
-    font-weight: bold;
+    const card =
+        document.createElement("article");
 
-    letter-spacing: 1px;
+    card.className =
+        `iku-card ${status}`;
 
-}
 
+    card.innerHTML = `
 
-.countdown-heading h2 {
+        <div class="iku-card-top">
 
-    color:
-        var(--biru-tua);
+            <span class="iku-number">
+                IKU ${index + 1}
+            </span>
 
-    font-size: 20px;
+            <span class="iku-status">
+                ${statusText}
+            </span>
 
-}
+        </div>
 
 
-.deadline-date {
+        <h3 class="iku-name">
+            ${escapeHTML(nama)}
+        </h3>
 
-    color:
-        var(--teks);
 
-    font-size: 13px;
+        <p class="iku-pj">
 
-    font-weight: bold;
+            Penanggung Jawab:
+            <strong>
+                ${escapeHTML(pj)}
+            </strong>
 
-    margin-bottom: 5px;
+        </p>
 
-}
 
+        <div class="document-list">
 
-.deadline-status {
+            ${createDocumentItem(
+                "Notula",
+                notula
+            )}
 
-    color:
-        var(--teks-sekunder);
+            ${createDocumentItem(
+                "Bukti Dukung Kinerja",
+                kinerja
+            )}
 
-    font-size: 12px;
+            ${createDocumentItem(
+                "Bukti Tindak Lanjut",
+                tindakLanjut
+            )}
 
-    margin-bottom: 17px;
+        </div>
 
-}
 
+        <div class="iku-actions">
 
-.countdown-timer {
+            ${createDriveButton(
+                "Notula",
+                notula
+            )}
 
-    display: grid;
+            ${createDriveButton(
+                "Kinerja",
+                kinerja
+            )}
 
-    grid-template-columns:
-        repeat(4, 1fr);
+            ${createDriveButton(
+                "Tindak Lanjut",
+                tindakLanjut
+            )}
 
-    gap: 8px;
+        </div>
 
-}
+    `;
 
 
-.time-box {
-
-    background-color:
-        var(--biru-tua);
-
-    color:
-        white;
-
-    border-radius: 10px;
-
-    padding:
-        12px 5px;
-
-    text-align: center;
-
-}
-
-
-.time-box strong {
-
-    display: block;
-
-    font-size: 22px;
-
-    line-height: 1;
-
-    margin-bottom: 6px;
-
-}
-
-
-.time-box span {
-
-    font-size: 10px;
-
-    opacity: 0.85;
+    return card;
 
 }
 
 
 /* =====================================
-   DAFTAR PJ
+   ITEM STATUS DOKUMEN
 ===================================== */
 
-.pj-monitoring {
+function createDocumentItem(nama, tersedia) {
 
-    border-top:
-        1px solid
-        var(--border);
+    return `
 
-    margin-top: 22px;
+        <div class="document-item">
 
-    padding-top: 19px;
+            <span>
+                ${nama}
+            </span>
 
-}
+            <span class="document-icon ${
+                tersedia
+                    ? "available"
+                    : "unavailable"
+            }">
 
+                ${
+                    tersedia
+                        ? "✓"
+                        : "×"
+                }
 
-.pj-heading h3 {
+            </span>
 
-    color:
-        var(--biru-tua);
+        </div>
 
-    font-size: 16px;
-
-    margin-top: 2px;
-
-    margin-bottom: 13px;
-
-}
-
-
-.pj-list {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 8px;
-
-}
-
-
-.pj-item {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    gap: 10px;
-
-    background-color:
-        #fff8e8;
-
-    border-left:
-        4px solid
-        var(--kuning);
-
-    border-radius: 7px;
-
-    padding:
-        10px 12px;
-
-}
-
-
-.pj-item-name {
-
-    color:
-        var(--teks);
-
-    font-size: 13px;
-
-    font-weight: bold;
-
-}
-
-
-.pj-item-iku {
-
-    color:
-        #9b6b13;
-
-    font-size: 11px;
-
-    text-align: right;
-
-}
-
-
-.pj-empty {
-
-    background-color:
-        #edf8f3;
-
-    color:
-        var(--hijau);
-
-    border-radius: 8px;
-
-    padding: 12px;
-
-    font-size: 13px;
-
-    font-weight: bold;
-
-}
-
-
-/* =====================================
-   RINGKASAN STATUS
-===================================== */
-
-.summary-section {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 18px;
-
-    margin:
-        25px 0;
-
-}
-
-
-.summary-card {
-
-    background-color:
-        white;
-
-    border-radius: 15px;
-
-    padding:
-        19px 22px;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 15px;
-
-    box-shadow:
-        0 4px 17px
-        rgba(25, 55, 85, 0.06);
-
-}
-
-
-.summary-icon {
-
-    width: 46px;
-
-    height: 46px;
-
-    border-radius: 12px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    font-size: 23px;
-
-    font-weight: bold;
-
-}
-
-
-.summary-card span {
-
-    display: block;
-
-    color:
-        var(--teks-sekunder);
-
-    font-size: 12px;
-
-    margin-bottom: 3px;
-
-}
-
-
-.summary-card strong {
-
-    font-size: 25px;
-
-}
-
-
-.summary-lengkap {
-
-    border-left:
-        5px solid
-        var(--biru);
-
-}
-
-
-.summary-lengkap .summary-icon {
-
-    background-color:
-        var(--biru-muda);
-
-    color:
-        var(--biru);
-
-}
-
-
-.summary-lengkap strong {
-
-    color:
-        var(--biru);
-
-}
-
-
-.summary-sebagian {
-
-    border-left:
-        5px solid
-        var(--kuning);
-
-}
-
-
-.summary-sebagian .summary-icon {
-
-    background-color:
-        var(--kuning-muda);
-
-    color:
-        var(--kuning);
-
-}
-
-
-.summary-sebagian strong {
-
-    color:
-        #a56d0b;
-
-}
-
-
-.summary-kosong {
-
-    border-left:
-        5px solid
-        var(--merah);
-
-}
-
-
-.summary-kosong .summary-icon {
-
-    background-color:
-        var(--merah-muda);
-
-    color:
-        var(--merah);
-
-}
-
-
-.summary-kosong strong {
-
-    color:
-        var(--merah);
-
-}
-
-
-/* =====================================
-   BAGIAN IKU
-===================================== */
-
-.indikator-section {
-
-    background-color:
-        white;
-
-    border-radius: 18px;
-
-    padding: 30px;
-
-    box-shadow:
-        0 5px 20px
-        rgba(25, 55, 85, 0.07);
-
-}
-
-
-.indikator-heading {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: flex-end;
-
-    gap: 25px;
-
-    margin-bottom: 26px;
-
-}
-
-
-.indikator-heading h2 {
-
-    color:
-        var(--biru-tua);
-
-    font-size: 27px;
-
-    margin-bottom: 7px;
-
-}
-
-
-.indikator-heading > div > p:last-child {
-
-    color:
-        var(--teks-sekunder);
-
-    font-size: 14px;
-
-    max-width: 670px;
-
-}
-
-
-.status-legend {
-
-    display: flex;
-
-    flex-wrap: wrap;
-
-    gap: 13px;
-
-    color:
-        var(--teks-sekunder);
-
-    font-size: 11px;
-
-    white-space: nowrap;
-
-}
-
-
-.status-legend span {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 5px;
-
-}
-
-
-.status-legend i {
-
-    width: 10px;
-
-    height: 10px;
-
-    border-radius: 50%;
-
-}
-
-
-.legend-blue {
-
-    background-color:
-        var(--biru);
-
-}
-
-
-.legend-yellow {
-
-    background-color:
-        var(--kuning);
-
-}
-
-
-.legend-red {
-
-    background-color:
-        var(--merah);
-
-}
-
-
-/* =====================================
-   GRID IKU
-===================================== */
-
-.indikator-grid {
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 18px;
-
-}
-
-
-/* =====================================
-   KARTU IKU
-===================================== */
-
-.iku-card {
-
-    border-radius: 14px;
-
-    padding: 20px;
-
-    border:
-        1px solid
-        var(--border);
-
-    position: relative;
-
-    overflow: hidden;
-
-    transition:
-        transform
-        0.2s ease,
-        box-shadow
-        0.2s ease;
-
-}
-
-
-.iku-card:hover {
-
-    transform:
-        translateY(-4px);
-
-    box-shadow:
-        0 9px 22px
-        rgba(20, 50, 80, 0.12);
-
-}
-
-
-/* KARTU BIRU */
-
-.iku-card.lengkap {
-
-    background-color:
-        #f2f8fe;
-
-    border-top:
-        5px solid
-        var(--biru);
-
-}
-
-
-/* KARTU KUNING */
-
-.iku-card.sebagian {
-
-    background-color:
-        #fff9e9;
-
-    border-top:
-        5px solid
-        var(--kuning);
-
-}
-
-
-/* KARTU MERAH */
-
-.iku-card.kosong {
-
-    background-color:
-        #fff4f4;
-
-    border-top:
-        5px solid
-        var(--merah);
-
-}
-
-
-/* =====================================
-   BAGIAN ATAS KARTU
-===================================== */
-
-.iku-card-top {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    gap: 10px;
-
-    margin-bottom: 15px;
-
-}
-
-
-.iku-number {
-
-    display: inline-flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    background-color:
-        var(--biru-tua);
-
-    color:
-        white;
-
-    border-radius: 8px;
-
-    padding:
-        6px 10px;
-
-    font-size: 12px;
-
-    font-weight: bold;
-
-}
-
-
-.iku-status {
-
-    border-radius: 20px;
-
-    padding:
-        5px 9px;
-
-    font-size: 10px;
-
-    font-weight: bold;
-
-}
-
-
-.lengkap .iku-status {
-
-    background-color:
-        #dcecfb;
-
-    color:
-        var(--biru);
-
-}
-
-
-.sebagian .iku-status {
-
-    background-color:
-        #ffedbb;
-
-    color:
-        #9b690c;
-
-}
-
-
-.kosong .iku-status {
-
-    background-color:
-        #ffdede;
-
-    color:
-        var(--merah);
-
-}
-
-
-/* =====================================
-   NAMA IKU
-===================================== */
-
-.iku-name {
-
-    color:
-        var(--teks);
-
-    font-size: 18px;
-
-    line-height: 1.45;
-
-    font-weight: 700;
-
-    margin-bottom: 13px;
-
-}
-
-
-/* =====================================
-   PJ IKU
-===================================== */
-
-.iku-pj {
-
-    color:
-        var(--teks-sekunder);
-
-    font-size: 12px;
-
-    padding-bottom: 12px;
-
-    margin-bottom: 13px;
-
-    border-bottom:
-        1px solid
-        rgba(50, 75, 100, 0.12);
-
-}
-
-
-.iku-pj strong {
-
-    color:
-        var(--teks);
-
-}
-
-
-/* =====================================
-   STATUS TIGA DOKUMEN
-===================================== */
-
-.document-list {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 8px;
-
-    margin-bottom: 17px;
-
-}
-
-
-.document-item {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    gap: 8px;
-
-    color:
-        var(--teks-sekunder);
-
-    font-size: 12px;
-
-}
-
-
-.document-icon {
-
-    width: 22px;
-
-    height: 22px;
-
-    border-radius: 50%;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    font-size: 12px;
-
-    font-weight: bold;
-
-}
-
-
-.document-icon.available {
-
-    background-color:
-        #dcecfb;
-
-    color:
-        var(--biru);
-
-}
-
-
-.document-icon.unavailable {
-
-    background-color:
-        #ffe2e2;
-
-    color:
-        var(--merah);
+    `;
 
 }
 
@@ -1676,470 +530,578 @@ body {
    TOMBOL GOOGLE DRIVE
 ===================================== */
 
-.iku-actions {
+function createDriveButton(nama, url) {
 
-    display: grid;
+    if (!url) {
 
-    grid-template-columns:
-        repeat(3, 1fr);
+        return `
 
-    gap: 7px;
+            <button
+                class="drive-button"
+                disabled
+            >
+                ${nama}
+            </button>
 
-    margin-top: auto;
+        `;
 
-}
-
-
-.drive-button {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    text-align: center;
-
-    text-decoration: none;
-
-    background-color:
-        var(--biru-tua);
-
-    color:
-        white;
-
-    border: none;
-
-    border-radius: 8px;
-
-    min-height: 38px;
-
-    padding:
-        7px 6px;
-
-    font-size: 10px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-
-    transition:
-        0.2s ease;
-
-}
+    }
 
 
-.drive-button:hover {
+    return `
 
-    background-color:
-        var(--biru);
+        <a
+            class="drive-button"
+            href="${escapeAttribute(url)}"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            ${nama}
+        </a>
 
-}
-
-
-.drive-button:disabled {
-
-    background-color:
-        #aab7c4;
-
-    cursor: not-allowed;
+    `;
 
 }
 
 
 /* =====================================
-   LOADING
+   DASHBOARD
 ===================================== */
 
-.loading {
+function updateDashboard(indikator, data) {
 
-    grid-column:
-        1 / -1;
+    const totalIKUData =
+        indikator.length || 17;
 
-    text-align: center;
 
-    color:
-        var(--teks-sekunder);
+    const totalDokumenData =
+        totalIKUData * 3;
 
-    padding:
-        40px 15px;
+
+    let dokumenAda = 0;
+
+    let lengkap = 0;
+
+    let sebagian = 0;
+
+    let kosong = 0;
+
+
+    indikator.forEach(iku => {
+
+        const notula =
+            iku.notula ||
+            iku.buktiNotula ||
+            iku.dokumenNotula;
+
+
+        const kinerja =
+            iku.kinerja ||
+            iku.buktiKinerja ||
+            iku.dokumenKinerja;
+
+
+        const tindakLanjut =
+            iku.tindakLanjut ||
+            iku.tindak_lanjut ||
+            iku.buktiTindakLanjut;
+
+
+        const jumlah = [
+            notula,
+            kinerja,
+            tindakLanjut
+        ].filter(Boolean).length;
+
+
+        dokumenAda += jumlah;
+
+
+        if (jumlah === 3) {
+
+            lengkap++;
+
+        } else if (jumlah > 0) {
+
+            sebagian++;
+
+        } else {
+
+            kosong++;
+
+        }
+
+    });
+
+
+    const persentase =
+        totalDokumenData > 0
+            ? Math.round(
+                (dokumenAda /
+                totalDokumenData) * 100
+            )
+            : 0;
+
+
+    const persentaseIKUData =
+        totalIKUData > 0
+            ? Math.round(
+                (lengkap /
+                totalIKUData) * 100
+            )
+            : 0;
+
+
+    /* DONUT */
+
+    persentaseDokumen.textContent =
+        `${persentase}%`;
+
+
+    donutChart.style.background =
+        `conic-gradient(
+            var(--biru) 0% ${persentase}%,
+            #e4ebf2 ${persentase}% 100%
+        )`;
+
+
+    /* PROGRESS BAR */
+
+    progressDokumen.style.width =
+        `${persentase}%`;
+
+
+    dokumenTersedia.textContent =
+        dokumenAda;
+
+
+    totalDokumen.textContent =
+        totalDokumenData;
+
+
+    /* IKU */
+
+    ikuLengkap.textContent =
+        lengkap;
+
+
+    totalIKU.textContent =
+        totalIKUData;
+
+
+    persentaseIKU.textContent =
+        `${persentaseIKUData}%`;
+
+
+    /* STATUS */
+
+    summaryLengkap.textContent =
+        lengkap;
+
+
+    summarySebagian.textContent =
+        sebagian;
+
+
+    summaryKosong.textContent =
+        kosong;
+
+
+    /* STATUS TEXT */
+
+    if (persentase === 100) {
+
+        statusProgress.textContent =
+            "Seluruh bukti dukung telah lengkap.";
+
+    } else if (persentase >= 75) {
+
+        statusProgress.textContent =
+            "Progres dokumen sudah sangat baik.";
+
+    } else if (persentase >= 50) {
+
+        statusProgress.textContent =
+            "Progres dokumen sedang berjalan.";
+
+    } else {
+
+        statusProgress.textContent =
+            "Masih banyak dokumen yang perlu dilengkapi.";
+
+    }
+
+
+    /* PJ BERMASALAH */
+
+    renderPJ(indikator);
 
 }
 
 
 /* =====================================
-   FOOTER
+   DAFTAR PJ BERMASALAH
 ===================================== */
 
-footer {
+function renderPJ(indikator) {
 
-    background-color:
-        var(--biru-tua);
-
-    color:
-        white;
-
-    text-align: center;
-
-    padding:
-        27px 15px;
-
-}
+    pjList.innerHTML = "";
 
 
-footer p:first-child {
+    const bermasalah =
+        indikator.filter(iku => {
 
-    font-size: 14px;
+            const jumlah = [
 
-    font-weight: bold;
+                iku.notula ||
+                iku.buktiNotula ||
+                iku.dokumenNotula,
 
-    margin-bottom: 5px;
+                iku.kinerja ||
+                iku.buktiKinerja ||
+                iku.dokumenKinerja,
 
-}
+                iku.tindakLanjut ||
+                iku.tindak_lanjut ||
+                iku.buktiTindakLanjut
+
+            ].filter(Boolean).length;
 
 
-footer p:last-child {
+            return jumlah < 3;
 
-    font-size: 11px;
+        });
 
-    opacity: 0.72;
+
+    if (bermasalah.length === 0) {
+
+        pjList.innerHTML = `
+
+            <p class="pj-empty">
+
+                ✓ Semua PJ sudah melengkapi
+                dokumen.
+
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+
+    bermasalah.forEach((iku, index) => {
+
+        const pj =
+            iku.pj ||
+            iku.penanggungJawab ||
+            iku.penanggung_jawab ||
+            "-";
+
+
+        const nama =
+            iku.nama ||
+            iku.namaIKU ||
+            iku.indikator ||
+            `IKU ${index + 1}`;
+
+
+        const item =
+            document.createElement("div");
+
+
+        item.className =
+            "pj-item";
+
+
+        item.innerHTML = `
+
+            <div>
+
+                <div class="pj-item-name">
+
+                    ${escapeHTML(pj)}
+
+                </div>
+
+                <div class="pj-item-iku">
+
+                    ${escapeHTML(nama)}
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        pjList.appendChild(item);
+
+    });
 
 }
 
 
 /* =====================================
-   RESPONSIVE TABLET
+   COUNTDOWN
 ===================================== */
 
-@media screen and (max-width: 1050px) {
+let countdownInterval = null;
 
-    .dashboard-section {
 
-        grid-template-columns:
-            1fr;
+/*
+   Default deadline sementara.
+
+   Nanti bisa kita ambil langsung
+   dari Google Apps Script.
+*/
+
+let deadline = null;
+
+
+function setupDeadline(data) {
+
+    /*
+       Coba mengambil deadline dari API.
+
+       Bisa menggunakan:
+       deadline
+       tanggalDeadline
+       deadlineDate
+    */
+
+    const deadlineValue =
+        data?.deadline ||
+        data?.tanggalDeadline ||
+        data?.deadlineDate;
+
+
+    if (!deadlineValue) {
+
+        deadlineDate.textContent =
+            "Deadline belum tersedia";
+
+        deadlineStatus.textContent =
+            "Tanggal deadline belum diberikan oleh API.";
+
+        return;
 
     }
 
 
-    .indikator-grid {
+    deadline =
+        new Date(deadlineValue);
 
-        grid-template-columns:
-            repeat(2, 1fr);
+
+    if (isNaN(deadline.getTime())) {
+
+        deadlineDate.textContent =
+            "Deadline tidak valid";
+
+        return;
 
     }
 
 
-    .countdown-card {
+    deadlineDate.textContent =
+        formatTanggal(deadline);
 
-        min-height: auto;
 
-    }
+    startCountdown();
 
 }
 
 
 /* =====================================
-   RESPONSIVE TABLET KECIL
+   COUNTDOWN TIMER
 ===================================== */
 
-@media screen and (max-width: 780px) {
+function startCountdown() {
 
-    .header h1 {
+    if (countdownInterval) {
 
-        font-size: 38px;
-
-    }
-
-
-    .periode-control {
-
-        flex-direction: column;
-
-        align-items: stretch;
+        clearInterval(
+            countdownInterval
+        );
 
     }
 
 
-    .tahun-control {
-
-        width: 100%;
-
-    }
+    updateCountdown();
 
 
-    .triwulan-buttons {
+    countdownInterval =
+        setInterval(
+            updateCountdown,
+            1000
+        );
 
-        grid-template-columns:
-            repeat(2, 1fr);
-
-    }
-
-
-    .progress-content {
-
-        flex-direction: column;
-
-        align-items: center;
-
-    }
+}
 
 
-    .progress-information {
+function updateCountdown() {
 
-        width: 100%;
-
-    }
+    if (!deadline) return;
 
 
-    .summary-section {
-
-        grid-template-columns:
-            1fr;
-
-    }
+    const sekarang =
+        new Date();
 
 
-    .indikator-heading {
+    const selisih =
+        deadline - sekarang;
 
-        flex-direction: column;
 
-        align-items: flex-start;
+    if (selisih <= 0) {
+
+        countdownDays.textContent = "00";
+        countdownHours.textContent = "00";
+        countdownMinutes.textContent = "00";
+        countdownSeconds.textContent = "00";
+
+        deadlineStatus.textContent =
+            "Deadline telah lewat.";
+
+        return;
 
     }
+
+
+    const totalDetik =
+        Math.floor(
+            selisih / 1000
+        );
+
+
+    const hari =
+        Math.floor(
+            totalDetik / 86400
+        );
+
+
+    const jam =
+        Math.floor(
+            (totalDetik % 86400) / 3600
+        );
+
+
+    const menit =
+        Math.floor(
+            (totalDetik % 3600) / 60
+        );
+
+
+    const detik =
+        totalDetik % 60;
+
+
+    countdownDays.textContent =
+        String(hari).padStart(2, "0");
+
+
+    countdownHours.textContent =
+        String(jam).padStart(2, "0");
+
+
+    countdownMinutes.textContent =
+        String(menit).padStart(2, "0");
+
+
+    countdownSeconds.textContent =
+        String(detik).padStart(2, "0");
+
+
+    deadlineStatus.textContent =
+        "Waktu tersisa sampai batas pengumpulan.";
 
 }
 
 
 /* =====================================
-   RESPONSIVE HP
+   FORMAT TANGGAL
 ===================================== */
 
-@media screen and (max-width: 560px) {
-
-    .container {
-
-        width: 94%;
-
-        margin-top: 20px;
-
-    }
-
-
-    .header {
-
-        min-height: 210px;
-
-    }
-
-
-    .header-overlay {
-
-        min-height: 210px;
-
-    }
-
-
-    .header-content {
-
-        width: 90%;
-
-    }
-
-
-    .header h1 {
-
-        font-size: 31px;
-
-    }
-
-
-    .header-description {
-
-        font-size: 15px;
-
-    }
-
-
-    .periode-section,
-
-    .progress-card,
-
-    .countdown-card,
-
-    .indikator-section {
-
-        padding: 20px;
-
-        border-radius: 14px;
-
-    }
-
-
-    .section-title h2,
-
-    .indikator-heading h2 {
-
-        font-size: 22px;
-
-    }
-
-
-    .card-heading {
-
-        flex-direction: column;
-
-    }
-
-
-    .refresh-button {
-
-        width: 100%;
-
-    }
-
-
-    .donut-chart {
-
-        width: 180px;
-
-        height: 180px;
-
-    }
-
-
-    .donut-chart::before {
-
-        width: 127px;
-
-        height: 127px;
-
-    }
-
-
-    .progress-iku-info {
-
-        grid-template-columns:
-            1fr;
-
-    }
-
-
-    .countdown-timer {
-
-        gap: 5px;
-
-    }
-
-
-    .time-box strong {
-
-        font-size: 18px;
-
-    }
-
-
-    .indikator-grid {
-
-        grid-template-columns:
-            1fr;
-
-    }
-
-
-    .iku-name {
-
-        font-size: 18px;
-
-    }
-
-
-    .status-legend {
-
-        white-space: normal;
-
-    }
+function formatTanggal(date) {
+
+    return new Intl.DateTimeFormat(
+        "id-ID",
+        {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    ).format(date);
 
 }
+
 
 /* =====================================
-   MENU PERENCANAAN & MONITORING
+   ERROR
 ===================================== */
 
-.menu-nav{
-    display:flex;
-    gap:12px;
-    margin-bottom:25px;
+function showError(message) {
+
+    indikatorList.innerHTML = `
+
+        <p class="loading">
+
+            ⚠️ ${escapeHTML(message)}
+
+        </p>
+
+    `;
+
 }
 
-.menu-btn{
-    background:#ffffff;
-    color:var(--biru-tua);
-    border:2px solid var(--border);
-    border-radius:10px;
-    padding:12px 22px;
-    font-size:15px;
-    font-weight:bold;
-    cursor:pointer;
-    transition:.2s;
-}
-
-.menu-btn:hover{
-    border-color:var(--biru);
-    color:var(--biru);
-}
-
-.menu-btn.active{
-    background:var(--biru-tua);
-    color:#fff;
-    border-color:var(--biru-tua);
-}
-
-/* Menampilkan section sesuai menu */
-
-.menu-content{
-    display:none;
-}
-
-.menu-content.active{
-    display:block;
-}
 
 /* =====================================
-   HALAMAN PERENCANAAN
+   KEAMANAN HTML
 ===================================== */
 
-.planning-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-    gap:20px;
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
 }
 
-.planning-card{
-    background:#fff;
-    border-radius:16px;
-    padding:24px;
-    box-shadow:0 5px 18px rgba(25,55,85,.08);
-    border-top:5px solid var(--biru);
+
+function escapeAttribute(value) {
+
+    return escapeHTML(value);
+
 }
 
-.planning-card h3{
-    color:var(--biru-tua);
-    margin-bottom:18px;
-    font-size:20px;
-}
 
-.planning-card a{
-    display:block;
-    text-decoration:none;
-    background:var(--biru-tua);
-    color:#fff;
-    padding:10px 14px;
-    border-radius:8px;
-    margin-bottom:10px;
-    text-align:center;
-    transition:.2s;
-}
+/* =====================================
+   REFRESH MANUAL
+===================================== */
 
-.planning-card a:hover{
-    background:var(--biru);
-}
+refreshButton.addEventListener(
+    "click",
+    loadMonitoring
+);
+
+
+/* =====================================
+   INIT
+===================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        updatePeriode();
+
+        loadMonitoring();
+
+    }
+);
